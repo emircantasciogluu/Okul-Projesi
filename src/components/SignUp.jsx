@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { register } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
-    level: "",
     email: "",
     confirmEmail: "",
     password: "",
@@ -14,6 +14,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,15 +27,15 @@ const SignUp = () => {
     setSuccess("");
 
     if (formData.email !== formData.confirmEmail) {
-      setError("E-posta ve onay e-postası eşleşmiyor.");
+      setError("Email and confirm email do not match.");
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError("Şifre ve onay şifre eşleşmiyor.");
+      setError("Password and confirm password do not match.");
       return;
     }
     if (!formData.level) {
-      setError("Lütfen seviyenizi seçin.");
+      setError("Please select your level.");
       return;
     }
 
@@ -49,7 +50,7 @@ const SignUp = () => {
         formData.level
       );
 
-      setSuccess("Kayıt başarıyla oluşturuldu.");
+      setSuccess("Account successfully created.");
       setFormData({
         name: "",
         surname: "",
@@ -59,8 +60,12 @@ const SignUp = () => {
         password: "",
         confirmPassword: "",
       });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (err) {
-      setError("Kayıt sırasında hata: " + err.message);
+      setError("An error occurred during registration: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -138,7 +143,7 @@ const SignUp = () => {
               required
               className="mt-2 block w-full rounded-md bg-[#e6e6ff] px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 focus:outline-2 focus:outline-indigo-600 sm:text-sm/6"
             >
-              <option value="">— Seçiniz —</option>
+              <option value="">— Select —</option>
               <option value="Junior">Junior</option>
               <option value="Mid">Mid</option>
               <option value="Senior">Senior</option>

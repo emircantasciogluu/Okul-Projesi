@@ -8,7 +8,11 @@ import { AuthContext } from "../AuthContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const { token, logout } = useContext(AuthContext);
+  const { token, setToken } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    setToken("");
+  };
 
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between">
@@ -39,7 +43,7 @@ const Navbar = () => {
                 </button>
               </Link>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="bg-[#B52A2A] px-4 py-2 flex items-center justify-center gap-2 rounded-3xl text-white"
               >
                 Logout
@@ -66,7 +70,7 @@ const Navbar = () => {
               </button>
             </Link>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="bg-[#B52A2A] px-4 py-2 flex items-center justify-center gap-2 rounded-3xl text-white"
             >
               Logout

@@ -1,40 +1,38 @@
-export async function register(firstName, lastName, email, password, level) {
-  const response = await fetch("/users", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ firstName, lastName, email, password, level }),
-  });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `HTTP ${response.status}`);
-  }
-  return response.json();
-}
+import axios from "axios";
 
-export async function login(email, password) {
-  const response = await fetch("/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `HTTP ${response.status}`);
-  }
-  return response.json();
-}
+const API_BASE_URL = "http://localhost:8080";
 
-export async function fetchCurrentUser(token) {
-  const response = await fetch("/users/me", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
+export const login = async (email, password) => {
+  const response = await axios.post(`${API_BASE_URL}/login`, {
+    email,
+    password,
   });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `HTTP ${response.status}`);
+
+  const token =
+    response.data.token ||
+    response.data.jwt ||
+    response.data.accessToken ||
+    null;
+
+  if (!token) {
+    throw new Error("Token not found in response");
   }
-  return response.json();
-}
+
+  return token;
+};
+
+export const register = async (name, surname, email, password) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/register`, {
+      firstName: name,
+      lastName: surname,
+      email,
+      password,
+      role: "USER", // sadece sabit gönderiyoruz
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Register failed");
+  }
+};

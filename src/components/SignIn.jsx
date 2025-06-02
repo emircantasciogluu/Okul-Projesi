@@ -18,16 +18,13 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
     try {
-      const data = await login(formData.email, formData.password);
-      setToken(data.token);
+      const token = await login(formData.email, formData.password);
+      setToken(token);
       navigate("/");
     } catch (err) {
-      setError("Login error: " + err.message);
-    } finally {
-      setLoading(false);
+      setError("Login failed: " + err.message);
     }
   };
 
@@ -65,14 +62,12 @@ const SignIn = () => {
           </div>
 
           <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="block text-sm/6 font-medium text-gray-900"
+            >
+              Password
+            </label>
             <div className="mt-2">
               <input
                 type="password"
@@ -80,8 +75,8 @@ const SignIn = () => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
-                autoComplete="current-password"
                 required
+                autoComplete="current-password"
                 className="block w-full rounded-md bg-[#e6e6ff] px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 focus:outline-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
